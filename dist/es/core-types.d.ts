@@ -1,9 +1,9 @@
 /// <reference types="react" />
-export declare type ResizeMouseEvent = React.MouseEvent<HTMLElement, MouseEvent>;
-export declare type ResizeTouchEvent = React.TouchEvent<HTMLElement>;
-export declare type OnResizeStart = ((resizeType?: ResizeType) => void | boolean) | undefined;
-export declare type OnResizeEnd = ((newSize: SizeUnit, domRect: DOMRect, resizeType?: ResizeType) => void) | undefined;
-export declare type OnDragEnd = (position: IPosition, moved: boolean) => void;
+export type ResizeMouseEvent = React.MouseEvent<HTMLElement, MouseEvent>;
+export type ResizeTouchEvent = React.TouchEvent<HTMLElement>;
+export type OnResizeStart = ((resizeType?: ResizeType) => void | boolean) | undefined;
+export type OnResizeEnd = ((newSize: SizeUnit, domRect: DOMRect, resizeType?: ResizeType) => void) | undefined;
+export type OnDragEnd = (position: IPosition, moved: boolean) => void;
 export declare enum Type {
     ViewPort = "viewport",
     Fixed = "fixed",
@@ -22,7 +22,7 @@ export declare enum Orientation {
     Horizontal = 0,
     Vertical = 1
 }
-export declare type SizeUnit = number | string | undefined;
+export type SizeUnit = number | string | undefined;
 export declare enum ResizeType {
     All = "resize-all",
     Left = "resize-left",

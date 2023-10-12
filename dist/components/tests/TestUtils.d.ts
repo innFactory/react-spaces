@@ -1,4 +1,4 @@
-declare type FakeMouseEventInit = {
+type FakeMouseEventInit = {
     bubbles?: boolean;
     cancelable?: boolean;
     composed?: boolean;

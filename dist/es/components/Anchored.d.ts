@@ -15,7 +15,7 @@ export interface IResizableProps extends IReactSpaceCommonProps {
     onResizeEnd?: (newSize: SizeUnit) => void;
 }
 export declare const resizableProps: {
-    size: PropTypes.Validator<string | number>;
+    size: PropTypes.Validator<NonNullable<NonNullable<string | number | null | undefined>>>;
     order: PropTypes.Requireable<number>;
     handleSize: PropTypes.Requireable<number>;
     touchHandleSize: PropTypes.Requireable<number>;
@@ -49,7 +49,7 @@ export interface IAnchorProps extends IResizableProps {
 }
 export declare const anchoredProps: {
     resizable: PropTypes.Requireable<boolean>;
-    size: PropTypes.Validator<string | number>;
+    size: PropTypes.Validator<NonNullable<NonNullable<string | number | null | undefined>>>;
     order: PropTypes.Requireable<number>;
     handleSize: PropTypes.Requireable<number>;
     touchHandleSize: PropTypes.Requireable<number>;

@@ -33,7 +33,7 @@ function styleInject(css, ref) {
 var css_248z = ".spaces-centered,.spaces-centered-vertically{position:relative;top:50%;transform:translateY(-50%)}.spaces-centered{text-align:center}.spaces-clearfix:after{content:\"\";display:table;clear:both}.spaces-resize-handle{position:absolute;z-index:9999;background:transparent}.spaces-resize-handle:before{content:\"\";position:absolute;left:0;top:0;right:0;bottom:0;z-index:2}.spaces-resize-handle:after{content:\"\";position:absolute;z-index:1}.spaces-touch-handle{position:absolute;z-index:9998;pointer-events:all;background:transparent}.spaces-resize-handle.resize-left:before{cursor:w-resize}.spaces-resize-handle.resize-top-left:before{cursor:nw-resize}.spaces-resize-handle.resize-right:before{cursor:e-resize}.spaces-resize-handle.resize-top-right:before{cursor:ne-resize}.spaces-resize-handle.resize-top:before{cursor:n-resize}.spaces-resize-handle.resize-bottom:before{cursor:s-resize}.spaces-resize-handle.resize-bottom-left:before{cursor:sw-resize}.spaces-resize-handle.resize-bottom-right:before{cursor:se-resize}.spaces-space{overflow:hidden;touch-action:none;box-sizing:border-box}.spaces-resizing .spaces-space{transition:none!important}.spaces-space .spaces-space-inner{position:absolute;left:0;top:0;right:0;bottom:0;box-sizing:border-box}.spaces-space.scrollable .spaces-space-inner{overflow:auto;touch-action:auto}";
 styleInject(css_248z);
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -47,7 +47,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
+/* global Reflect, Promise, SuppressedError, Symbol */
 
 var extendStatics = function(d, b) {
     extendStatics = Object.setPrototypeOf ||
@@ -96,6 +96,11 @@ function __spreadArray(to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 var Type;
 (function (Type) {
@@ -176,7 +181,7 @@ function shortuuid() {
     return ("000" + firstPart.toString(36)).slice(-3) + ("000" + secondPart.toString(36)).slice(-3);
 }
 function getSizeString(size) {
-    return typeof size === "string" ? size : size + "px";
+    return typeof size === "string" ? size : "".concat(size, "px");
 }
 function css(size, dontAddCalc) {
     if (size.size === 0 && size.adjusted.length === 0 && size.resized === 0) {
@@ -199,7 +204,7 @@ function css(size, dontAddCalc) {
     if (dontAddCalc) {
         return parts.join(" + ");
     }
-    return "calc(" + parts.join(" + ") + ")";
+    return "calc(".concat(parts.join(" + "), ")");
 }
 function coalesce() {
     var args = [];
@@ -252,42 +257,42 @@ function styleDefinition(space) {
     };
     var cssString = [];
     if (style.position) {
-        cssString.push("position: " + style.position + ";");
+        cssString.push("position: ".concat(style.position, ";"));
     }
     if (style.left) {
-        cssString.push("left: " + style.left + ";");
+        cssString.push("left: ".concat(style.left, ";"));
     }
     if (style.top) {
-        cssString.push("top: " + style.top + ";");
+        cssString.push("top: ".concat(style.top, ";"));
     }
     if (style.right) {
-        cssString.push("right: " + style.right + ";");
+        cssString.push("right: ".concat(style.right, ";"));
     }
     if (style.bottom) {
-        cssString.push("bottom: " + style.bottom + ";");
+        cssString.push("bottom: ".concat(style.bottom, ";"));
     }
     if (style.width) {
-        cssString.push("width: " + style.width + ";");
+        cssString.push("width: ".concat(style.width, ";"));
     }
     if (style.height) {
-        cssString.push("height: " + style.height + ";");
+        cssString.push("height: ".concat(style.height, ";"));
     }
     if (style.zIndex) {
-        cssString.push("z-index: " + style.zIndex + ";");
+        cssString.push("z-index: ".concat(style.zIndex, ";"));
     }
     if (space.allowOverflow) {
         cssString.push("overflow: visible;");
     }
     if (cssString.length > 0) {
-        cssElements.push("#" + space.id + " { " + cssString.join(" ") + " }");
+        cssElements.push("#".concat(space.id, " { ").concat(cssString.join(" "), " }"));
     }
     if (space.scrollable) {
-        cssElements.push("#" + space.id + " > .spaces-space-inner { overflow: auto; touch-action: auto; }");
+        cssElements.push("#".concat(space.id, " > .spaces-space-inner { overflow: auto; touch-action: auto; }"));
     }
     var nhandleOffset = 0;
-    var handleSize = space.handleSize + "px";
-    var touchHandleSize = "-" + (space.touchHandleSize / 2 - space.handleSize / 2) + "px";
-    var negativeTouchHandleSize = space.touchHandleSize / 2 - space.handleSize / 2 + "px";
+    var handleSize = "".concat(space.handleSize, "px");
+    var touchHandleSize = "-".concat(space.touchHandleSize / 2 - space.handleSize / 2, "px");
+    var negativeTouchHandleSize = "".concat(space.touchHandleSize / 2 - space.handleSize / 2, "px");
     switch (space.handlePlacement) {
         case ResizeHandlePlacement.Inside:
         case ResizeHandlePlacement.OverlayInside:
@@ -300,22 +305,22 @@ function styleDefinition(space) {
             nhandleOffset = space.handleSize / 2;
             break;
     }
-    var handleOffset = nhandleOffset + "px";
+    var handleOffset = "".concat(nhandleOffset, "px");
     var addHandleCss = function (id, pos) {
         var styles = [];
         if (pos.left)
-            styles.push("left: " + pos.left);
+            styles.push("left: ".concat(pos.left));
         if (pos.top)
-            styles.push("top: " + pos.top);
+            styles.push("top: ".concat(pos.top));
         if (pos.right)
-            styles.push("right: " + pos.right);
+            styles.push("right: ".concat(pos.right));
         if (pos.bottom)
-            styles.push("bottom: " + pos.bottom);
+            styles.push("bottom: ".concat(pos.bottom));
         if (pos.width)
-            styles.push("width: " + pos.width);
+            styles.push("width: ".concat(pos.width));
         if (pos.height)
-            styles.push("height: " + pos.height);
-        cssElements.push("#" + space.id + "-" + id + " { " + styles.join("; ") + "}");
+            styles.push("height: ".concat(pos.height));
+        cssElements.push("#".concat(space.id, "-").concat(id, " { ").concat(styles.join("; "), "}"));
     };
     var widthOrHeightSpecified = function () {
         return space.type === Type.Positioned
@@ -327,7 +332,7 @@ function styleDefinition(space) {
     if (space.canResizeLeft) {
         if (space.anchor) {
             addHandleCss("ml", {
-                right: "calc(" + css(space.right, true) + " + " + css(space.width) + " - " + handleOffset + ")",
+                right: "calc(".concat(css(space.right, true), " + ").concat(css(space.width), " - ").concat(handleOffset, ")"),
                 top: "0",
                 bottom: "0",
                 width: handleSize,
@@ -335,7 +340,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("ml", {
-                left: "calc(" + css(space.left, true) + " - " + handleOffset + ")",
+                left: "calc(".concat(css(space.left, true), " - ").concat(handleOffset, ")"),
                 top: css(space.top),
                 bottom: css(space.bottom),
                 width: handleSize,
@@ -354,7 +359,7 @@ function styleDefinition(space) {
             addHandleCss("mt", {
                 left: "0",
                 right: "0",
-                bottom: "calc(" + css(space.bottom) + " + " + css(space.height) + " - " + handleOffset + ")",
+                bottom: "calc(".concat(css(space.bottom), " + ").concat(css(space.height), " - ").concat(handleOffset, ")"),
                 height: handleSize,
             });
             addHandleCss("mt:after", {
@@ -367,7 +372,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("mt", {
-                top: "calc(" + css(space.top, true) + " - " + handleOffset + ")",
+                top: "calc(".concat(css(space.top, true), " - ").concat(handleOffset, ")"),
                 left: css(space.left),
                 right: css(space.right),
                 width: css(space.width),
@@ -378,7 +383,7 @@ function styleDefinition(space) {
                     top: touchHandleSize,
                     bottom: touchHandleSize,
                     left: touchHandleSize,
-                    width: "calc(" + css(space.width, true) + " - " + handleOffset + ") + " + negativeTouchHandleSize,
+                    width: "calc(".concat(css(space.width, true), " - ").concat(handleOffset, ") + ").concat(negativeTouchHandleSize),
                     right: touchHandleSize,
                 });
             }
@@ -396,7 +401,7 @@ function styleDefinition(space) {
     if (space.canResizeRight) {
         if (widthOrHeightSpecified()) {
             addHandleCss("mr", {
-                left: "calc(" + css(space.left, true) + " + " + css(space.width, true) + " - " + handleSize + " + " + handleOffset + ")",
+                left: "calc(".concat(css(space.left, true), " + ").concat(css(space.width, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
                 top: css(space.top),
                 bottom: css(space.bottom),
                 width: handleSize,
@@ -405,7 +410,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("mr", {
-                right: "calc(" + css(space.right, true) + " - " + handleOffset + ")",
+                right: "calc(".concat(css(space.right, true), " - ").concat(handleOffset, ")"),
                 top: css(space.top),
                 bottom: css(space.bottom),
                 width: handleSize,
@@ -422,7 +427,7 @@ function styleDefinition(space) {
     if (space.canResizeBottom) {
         if (widthOrHeightSpecified()) {
             addHandleCss("mb", {
-                top: "calc(" + css(space.top, true) + " + " + css(space.height, true) + " - " + handleSize + " + " + handleOffset + ")",
+                top: "calc(".concat(css(space.top, true), " + ").concat(css(space.height, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
                 left: css(space.left),
                 right: css(space.right),
                 width: css(space.width),
@@ -431,7 +436,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("mb", {
-                bottom: "calc(" + css(space.bottom, true) + " - " + handleOffset + ")",
+                bottom: "calc(".concat(css(space.bottom, true), " - ").concat(handleOffset, ")"),
                 left: css(space.left),
                 right: css(space.right),
                 width: css(space.width),
@@ -447,7 +452,7 @@ function styleDefinition(space) {
     }
     if (space.canResizeTopLeft) {
         addHandleCss("mtl", {
-            left: "calc(" + css(space.left, true) + " - " + handleOffset + ")",
+            left: "calc(".concat(css(space.left, true), " - ").concat(handleOffset, ")"),
             top: css(space.top),
             width: handleSize,
             height: handleSize,
@@ -462,7 +467,7 @@ function styleDefinition(space) {
     if (space.canResizeTopRight) {
         if (widthOrHeightSpecified()) {
             addHandleCss("mtr", {
-                left: "calc(" + css(space.left, true) + " + " + css(space.width, true) + " - " + handleSize + " + " + handleOffset + ")",
+                left: "calc(".concat(css(space.left, true), " + ").concat(css(space.width, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
                 top: css(space.top),
                 width: handleSize,
                 height: handleSize,
@@ -470,7 +475,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("mtr", {
-                right: "calc(" + css(space.right, true) + " - " + handleOffset + ")",
+                right: "calc(".concat(css(space.right, true), " - ").concat(handleOffset, ")"),
                 top: css(space.top),
                 width: handleSize,
                 height: handleSize,
@@ -486,7 +491,7 @@ function styleDefinition(space) {
     if (space.canResizeBottomLeft) {
         if (widthOrHeightSpecified()) {
             addHandleCss("mbl", {
-                top: "calc(" + css(space.top, true) + " + " + css(space.height, true) + " - " + handleSize + " + " + handleOffset + ")",
+                top: "calc(".concat(css(space.top, true), " + ").concat(css(space.height, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
                 left: css(space.left),
                 width: handleSize,
                 height: handleSize,
@@ -494,7 +499,7 @@ function styleDefinition(space) {
         }
         else {
             addHandleCss("mbl", {
-                bottom: "calc(" + css(space.bottom, true) + " - " + handleOffset + ")",
+                bottom: "calc(".concat(css(space.bottom, true), " - ").concat(handleOffset, ")"),
                 left: css(space.left),
                 width: handleSize,
                 height: handleSize,
@@ -510,16 +515,16 @@ function styleDefinition(space) {
     if (space.canResizeBottomRight) {
         if (widthOrHeightSpecified()) {
             addHandleCss("mbr", {
-                left: "calc(" + css(space.left, true) + " + " + css(space.width, true) + " - " + handleSize + " + " + handleOffset + ")",
-                top: "calc(" + css(space.top, true) + " + " + css(space.height, true) + " - " + handleSize + " + " + handleOffset + ")",
+                left: "calc(".concat(css(space.left, true), " + ").concat(css(space.width, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
+                top: "calc(".concat(css(space.top, true), " + ").concat(css(space.height, true), " - ").concat(handleSize, " + ").concat(handleOffset, ")"),
                 width: handleSize,
                 height: handleSize,
             });
         }
         else {
             addHandleCss("mbr", {
-                right: "calc(" + css(space.right, true) + " - " + handleOffset + ")",
-                bottom: "calc(" + css(space.bottom, true) + " - " + handleOffset + ")",
+                right: "calc(".concat(css(space.right, true), " - ").concat(handleOffset, ")"),
+                bottom: "calc(".concat(css(space.bottom, true), " - ").concat(handleOffset, ")"),
                 width: handleSize,
                 height: handleSize,
             });
@@ -536,7 +541,7 @@ function styleDefinition(space) {
 function updateStyleDefinition(space) {
     var definition = styleDefinition(space);
     if (!isServer()) {
-        var existing = document.getElementById("style_" + space.id);
+        var existing = document.getElementById("style_".concat(space.id));
         if (existing) {
             if (existing.innerHTML !== definition) {
                 existing.innerHTML = definition;
@@ -544,7 +549,7 @@ function updateStyleDefinition(space) {
         }
         else {
             var newStyle = document.createElement("style");
-            newStyle.id = "style_" + space.id;
+            newStyle.id = "style_".concat(space.id);
             newStyle.innerHTML = definition;
             document.head.appendChild(newStyle);
         }
@@ -554,7 +559,7 @@ function updateStyleDefinition(space) {
     }
 }
 function removeStyleDefinition(space) {
-    var existing = document.getElementById("style_" + space.id);
+    var existing = document.getElementById("style_".concat(space.id));
     if (existing) {
         document.head.removeChild(existing);
     }
@@ -644,7 +649,7 @@ function createAdjuster(resizeType, space, originalX, originalY) {
                 right1Adjuster_1(x, y);
             };
         default:
-            throw "Resize type " + resizeType + " not supported";
+            throw "Resize type ".concat(resizeType, " not supported");
     }
 }
 function createResize(store) {
@@ -1293,10 +1298,10 @@ function useForceUpdate() {
 function useUniqueId() {
     if (SSR_SUPPORT_ENABLED) {
         if (React.version.startsWith("18")) {
-            return "s" + React.useId().replace(/\:/g, "");
+            return "s".concat(React.useId().replace(/\:/g, ""));
         }
     }
-    return "s" + shortuuid();
+    return "s".concat(shortuuid());
 }
 function useSpace(props) {
     var store = currentStore;
@@ -1378,9 +1383,9 @@ function useSpaceResizeHandles(store, space) {
     var mouseHandles = [];
     var setupResizeHandle = function (id, className, resizeType) {
         mouseHandles.push({
-            id: space.id + "-" + id,
+            id: "".concat(space.id, "-").concat(id),
             key: id,
-            className: "spaces-resize-handle " + className,
+            className: "spaces-resize-handle ".concat(className),
             onMouseDown: function (event) { return store.startMouseResize(resizeType, space, event); },
             onTouchStart: function (event) { return store.startTouchResize(resizeType, space, event); },
         });
@@ -1464,7 +1469,7 @@ var SpaceInner = function (props) {
     };
     var _c = useSpace(__assign(__assign({}, props), { id: idToUse })), space = _c.space, domRect = _c.domRect, elementRef = _c.elementRef, resizeHandles = _c.resizeHandles;
     if (SSR_SUPPORT_ENABLED && !isServer()) {
-        var preRenderedStyle = document.getElementById("style_" + idToUse + "_ssr");
+        var preRenderedStyle = document.getElementById("style_".concat(idToUse, "_ssr"));
         if (preRenderedStyle) {
             space.ssrStyle = preRenderedStyle.innerHTML;
         }
@@ -1479,7 +1484,7 @@ var SpaceInner = function (props) {
         }
     });
     var userClasses = className ? className.split(" ").map(function (c) { return c.trim(); }) : [];
-    var outerClasses = __spreadArray(__spreadArray(__spreadArray(__spreadArray([], ["spaces-space", space.children.find(function (s) { return s.resizing; }) ? "spaces-resizing" : undefined], false), [space.type === Type.Fixed ? "spaces-fixedsize-layout" : undefined], false), [space.type === Type.ViewPort ? "spaces-fullpage-layout" : undefined], false), userClasses.map(function (c) { return c + "-container"; }), true).filter(function (c) { return c; });
+    var outerClasses = __spreadArray(__spreadArray(__spreadArray(__spreadArray([], ["spaces-space", space.children.find(function (s) { return s.resizing; }) ? "spaces-resizing" : undefined], false), [space.type === Type.Fixed ? "spaces-fixedsize-layout" : undefined], false), [space.type === Type.ViewPort ? "spaces-fullpage-layout" : undefined], false), userClasses.map(function (c) { return "".concat(c, "-container"); }), true).filter(function (c) { return c; });
     var innerClasses = __spreadArray(__spreadArray([], ["spaces-space-inner"], false), userClasses, true);
     var innerStyle = style;
     if (space.handlePlacement === ResizeHandlePlacement.Inside) {
@@ -1498,7 +1503,7 @@ var SpaceInner = function (props) {
     }, events);
     return (React.createElement(React.Fragment, null,
         resizeHandles.mouseHandles.map(function (handleProps) { return (handleRender === null || handleRender === void 0 ? void 0 : handleRender(handleProps)) || React.createElement("div", __assign({}, handleProps)); }),
-        SSR_SUPPORT_ENABLED && space.ssrStyle && initialRender && React.createElement("style", { id: "style_" + space.id + "_ssr" }, space.ssrStyle),
+        SSR_SUPPORT_ENABLED && space.ssrStyle && initialRender && React.createElement("style", { id: "style_".concat(space.id, "_ssr") }, space.ssrStyle),
         React.createElement(props.as || "div", outerProps, React.createElement("div", { className: innerClasses.join(" "), style: innerStyle },
             React.createElement(ParentContext.Provider, { value: space.id },
                 React.createElement(LayerContext.Provider, { value: undefined },
